@@ -28,7 +28,7 @@ const ExamCard = ({ exam, bgColor, examType }) => {
         <>
             {
                 
-                <div onClick={() => { handleExamClick(exam) }} className="exam hover:cursor-pointer w-[25%] h-[150px] flex flex-col border border-slate-300 hover:shadow-lg rounded-md">
+                <div onClick={() => { handleExamClick(exam) }} className="exam hover:cursor-pointer w-[250px] h-[150px] flex flex-col border border-slate-300 hover:shadow-lg rounded-md">
                 <div className={`h-[40%] flex justify-center items-center font-medium text-white  ${bgColor}`}>
                     <h3 className="exam-name text-[18px] ">{exam.examName}</h3>
                 </div>

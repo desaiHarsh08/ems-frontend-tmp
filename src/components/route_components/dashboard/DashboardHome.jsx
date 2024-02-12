@@ -148,7 +148,7 @@ const DashboardHome = () => {
 
 
     return (
-        <div className='text-[14px]'>
+        <div className='text-[14px] w-[100%] overflow-hidden'>
             <div className='m-3'>
                 <h1 className='text-xl sm:text-2xl uppercase font-semibold text-center sm:my-14 mb-7  sm:text-left '>Exam&nbsp; Attendance&nbsp; Management</h1>
 
@@ -174,7 +174,7 @@ const DashboardHome = () => {
                 {/* RECENT EXAM(S) */}
                 <div id="recent-exam" className={`w-full px-3 ${examsObj && examsObj?.recentExams.length > 4 ? 'overflow-x-auto' : ''} border`}>
                     <h2 className='text-xl font-semibold my-4'>Recent Exam(s)</h2>
-                    <div id='recent-exam-container' className='flex gap-5 h-[200px] min-w-[1080px]  '>
+                    <div id='recent-exam-container' className='flex gap-5 h-[200px] min-w-[100vw]  '>
                         {
                             (examsObj && examsObj.recentExams?.length === 0) ?
                                 <div className='py-3'>

@@ -500,15 +500,15 @@ const CreateExam = () => {
                             <span className='w-20'>Step 2:</span>
                             <span>Add the Exam OC</span>
                         </h2>
-                        <div className='w-full my-3 flex items-center'>
+                        <div className='w-full my-3 flex flex-col sm:flex-row sm:items-center gap-2'>
                             <label htmlFor="username" className='min-w-[200px] block'  >Enter the name</label>
                             <input type="text" name='username' id='username' value={examOC.username} onChange={handleExamOCChange} className='px-4 py-2 border rounded-md border-slate-400 min-w-[200px]' placeholder='Enter the username...' />
                         </div>
-                        <div className='w-full my-3 flex items-center'>
+                        <div className='w-full my-3 flex flex-col sm:flex-row sm:items-center gap-2'>
                             <label htmlFor="email" className='min-w-[200px] block'  >Enter the email</label>
                             <input type="email" name='email' id='email' value={examOC.email} onChange={handleExamOCChange} className='px-4 py-2 border rounded-md border-slate-400 min-w-[200px]' placeholder='Enter the email...' />
                         </div>
-                        <div className='w-full my-3 flex items-center'>
+                        <div className='w-full my-3 flex flex-col sm:flex-row sm:items-center gap-2'>
                             <label htmlFor="phone" className='min-w-[200px] block'  >Enter the phone</label>
                             <input type="text" name='phone' id='phone' value={examOC.phone} onChange={handleExamOCChange} className='px-4 py-2 border rounded-md border-slate-400 min-w-[200px]' placeholder='Enter the phone...' />
                         </div>
@@ -517,10 +517,10 @@ const CreateExam = () => {
                     {/* ADD MEMBERS */}
                     <div className=' pt-7'>
                         <h2 className='my-7 text-xl font-medium '>Add Members (Can be added before the date of examination)</h2>
-                        <div className='flex '>
+                        <div className='flex add-members-container gap-5'>
                             {/* INPUT THE FILE CONTAINING THE INVIGILATORS DETAILS */}
-                            <div className='w-1/3'>
-                                <h2 className='text-xl font-medium flex '>
+                            <div className='add-members-card w-1/3'>
+                                <h2 className='text-[16px] font-medium flex '>
                                     <span className='w-20'>Step 3:</span>
                                     <span>Add the Invigilators</span>
                                 </h2>
@@ -531,9 +531,9 @@ const CreateExam = () => {
                             </div>
 
                             {/* INPUT THE FILE CONTAINING THE SUPPORT_STAFF DETAILS */}
-                            <div className='w-1/3'>
-                                <h2 className='text-xl font-medium flex '>
-                                    <span className='w-20'>Step 3:</span>
+                            <div className='add-members-card w-1/3'>
+                                <h2 className='text-[16px] font-medium flex '>
+                                    <span className='w-20 '>Step 4:</span>
                                     <span>Add the Support staff</span>
                                 </h2>
                                 <div className='w-full my-3'>
@@ -543,9 +543,9 @@ const CreateExam = () => {
                             </div>
 
                             {/* INPUT THE FILE CONTAINING THE EXAMINERS DETAILS */}
-                            <div className='w-1/3'>
-                                <h2 className='text-xl font-medium flex '>
-                                    <span className='w-20'>Step 3:</span>
+                            <div className='add-members-card w-1/3'>
+                                <h2 className='text-[16px] font-medium flex '>
+                                    <span className='w-20'>Step 5:</span>
                                     <span>Add the Examiners</span>
                                 </h2>
                                 <div className='w-full my-3'>
@@ -561,7 +561,7 @@ const CreateExam = () => {
                     {/* INPUT THE FILE CONTAINING THE STUDENTS DETAILS */}
                     <div>
                         <h2 className='text-xl font-medium flex mt-14'>
-                            <span className='w-20'>Step 2:</span>
+                            <span className='w-20'>Step 6:</span>
                             <span>Add the students</span>
                         </h2>
                         <div id="input-file" className='w-full my-3'>

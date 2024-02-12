@@ -65,7 +65,9 @@
   width: 200px;
 }
 
-
+.add-members-card {
+  width: 33% !important;
+}
 @media (max-width: 990px) {
   .sidebar {
     position: absolute;
@@ -77,6 +79,13 @@
     z-index: 9999999;
   }
 
+  .add-members-container {
+    flex-direction: column;
+  }
+
+  .add-members-card {
+    width: 100% !important;
+  }
   .translate-sidebar {
     transform: translateX(0);
   }
@@ -86,7 +95,7 @@
   }
 
   .shared-area {
-    width: 100vw;
+    width: 100%;
     position: fixed;
     top:calc(56px);
   }

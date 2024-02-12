@@ -444,7 +444,9 @@ const Workspace = () => {
       </div>
       <hr />
       {/* ANSWER-SCRIPT COUNTING TABLE */}
-      <div id="answer-script-counting" className="my-7 answer-script-counting h-[50vh] overflow-y-scroll">
+      {
+        exam?.examLocations.length !== 0 &&
+        <div id="answer-script-counting" className="my-7 answer-script-counting h-[50vh] overflow-y-scroll">
         <h2 className='text-xl font-medium '>Count the answer-scripts</h2>
         <div className='border border-slate-400 min-w-[1047px] overflow-x-scroll'>
           <div className="fields w-full flex border-b border-slate-400">
@@ -458,7 +460,7 @@ const Workspace = () => {
           <div className=''>
        
             {
-              exam && getSortedFloors(exam.examLocations).map((floor, i) => {
+              exam  && getSortedFloors(exam.examLocations).map((floor, i) => {
                 return getSortedRooms(floor.rooms).map((room, j) => (
                   <AnswerScriptCountingRow key={`row-${i + j}`} indexFloor={i} floorNumber={floor.floorNumber} room={room} handleChangeExam={handleChangeExam} handleSaveExam={handleSaveExam} />
                 ))
@@ -470,7 +472,7 @@ const Workspace = () => {
           </div>
         </div>
             
-      </div>
+      </div>}
     </div>
   )
 }
