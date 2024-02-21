@@ -43,7 +43,7 @@ const Dashboard = () => {
     <>
       {/* Loading COMPONENT */}
       <div id="loading-container" className="loading-container w-full">
-        {loading && <Loading />}
+        {loading ===true && <Loading />}
       </div>
 
       {/* DASHBOARD */}

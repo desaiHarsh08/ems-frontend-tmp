@@ -27,26 +27,26 @@ const ExamCard = ({ exam, bgColor, examType }) => {
     return (
         <>
             {
-                
+
                 <div onClick={() => { handleExamClick(exam) }} className="exam hover:cursor-pointer w-[250px] h-[150px] flex flex-col border border-slate-300 hover:shadow-lg rounded-md">
-                <div className={`h-[40%] flex justify-center items-center font-medium text-white  ${bgColor}`}>
-                    <h3 className="exam-name text-[18px] ">{exam.examName}</h3>
-                </div>
-                <div className='h-[60%] flex justify-center items-center '>
-                    <ul className='w-full h-full flex justify-center items-center'>
-                        <li className='w-full flex flex-col justify-center items-center'>
-                            <div className='flex w-full '>
-                                <p className='w-1/2 text-center'>Date</p>
-                                <p className='w-1/2 text-center'>{exam.examDate}</p>
-                            </div>
-                            <div className='flex w-full'>
-                                <p className='w-1/2 text-center'>Time</p>
-                                <p className='w-1/2 text-center'>{exam.examTime}</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>}
+                    <div className={`h-[40%] flex justify-center items-center font-medium text-white  ${bgColor}`}>
+                        <h3 className="exam-name text-[18px] ">{exam.examName}</h3>
+                    </div>
+                    <div className='h-[60%] flex justify-center items-center '>
+                        <ul className='w-full h-full flex justify-center items-center'>
+                            <li className='w-full flex flex-col justify-center items-center'>
+                                <div className='flex w-full '>
+                                    <p className='w-1/2 text-center'>Date</p>
+                                    <p className='w-1/2 text-center'>{exam.examDate}</p>
+                                </div>
+                                <div className='flex w-full'>
+                                    <p className='w-1/2 text-center'>Time</p>
+                                    <p className='w-1/2 text-center'>{exam.examTime}</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>}
         </>
     )
 }

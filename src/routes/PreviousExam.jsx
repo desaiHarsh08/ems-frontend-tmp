@@ -1,11 +1,10 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom'
-import ExamCard from './ExamCard';
-// import { toogleSidebar } from '../../../app/features/sidebarToggleSlice';
+import { useLocation, useNavigate } from 'react-router-dom';
+import ExamCard from '../components/route_components/dashboard/ExamCard';
 
-const DashboardHome = () => {
+const PreviousExams = () => {
 
     const location = useLocation();
 
@@ -142,47 +141,29 @@ const DashboardHome = () => {
         <div className='text-[14px] w-[100%] overflow-hidden'>
             <div className='m-3'>
                 <h1 className='text-xl sm:text-2xl uppercase font-semibold text-center sm:my-7 mb-7  sm:text-left '>Exam&nbsp; Attendance&nbsp; Management</h1>
+                <span>TODO</span>
+                {/* PREVIOUS EXAM(S) */}
+                {/* <div id="upcoming-exams" className='my-7'>
+                    <h2 className='text-xl font-semibold'>Previous Exams</h2>
+                    {examsObj && examsObj?.upcomingExams?.length == 0 ? <div className='py-3'>
+                        <p>No previous exams found!</p>
+                    </div> : ''}
 
-                {/* RECENT EXAM(S) */}
-                <div id="recent-exam" className={`w-full  px-3 ${examsObj && examsObj?.recentExams.length > 4 ? 'overflow-x-auto' : ''} `}>
-                    <h2 className='text-xl font-semibold my-4'>Recent Exam(s)</h2>
-                    <div id='recent-exam-container' className='flex flex-col items-center md:flex-row gap-5    '>
-                        {
-                            (examsObj && examsObj.recentExams?.length === 0) ?
-                                <div className='py-3'>
-                                    <p>Today there is no exam!</p>
-                                </div> : '  '
-                        }
-
-                        {
-                            examsObj && examsObj.recentExams?.map((exam, index) => {
-
-                                if (
-                                    (auth['user-credentials'].user.userType === 'ADMIN')
-                                ) {
-                                    return <ExamCard key={`recent-exam-${index}`} exam={exam} bgColor={examDone.includes(exam.examName) ? 'bg-green-400' : 'bg-orange-400'} examType={"RECENT"} />
+                    {
+                        examsObj && examsObj?.upcomingExams?.length != 0 ?
+                            <div id='exams-cards' className='flex min-w-[1078px] h-[150px] overflow-x-auto my-3 gap-2' >
+                                {
+                                    examsObj && examsObj.upcomingExams?.map((exam, index) => (
+                                        <ExamCard key={`upcoming-exam-${index}`} exam={exam} bgColor={'bg-blue-500'} examType={"UPCOMING"} />
+                                    ))
                                 }
-                                else if (((auth['user-credentials'].user.userType !== 'ADMIN') && examIds.includes(exam._id))) {
-                                    return <ExamCard key={`recent-exam-${index}`} exam={exam} bgColor={examDone.includes(exam.examName) ? 'bg-green-400' : 'bg-orange-400'} examType={"RECENT"} />
-
-                                }
-                                else {
-                                    return <p>No exam got scheduled!</p>
-                                }
-
-                            })
-                        }
-
-
-
-
-
-                    </div>
-                </div>
-
+                            </div> 
+                        : ''
+                    }
+                </div> */}
             </div>
         </div >
     )
 }
 
-export default DashboardHome
+export default PreviousExams

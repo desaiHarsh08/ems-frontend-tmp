@@ -7,6 +7,8 @@ import { MdLibraryBooks } from "react-icons/md";
 import { IoAddOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from 'react-redux';
 import { toogleNavbar, toogleSidebar } from '../../../app/features/sidebarToggleSlice';
+import { TbBrandNextjs } from "react-icons/tb";
+import { BiSolidSkipPreviousCircle } from "react-icons/bi";
 
 const Sidebar = () => {
 
@@ -56,6 +58,18 @@ const Sidebar = () => {
                             <span>Home</span>
                         </p>
                     </li>
+                    <li>
+                        <p onClick={() => { handleLink('upcoming-exams') }} className={`cursor-pointer text-[14px] flex items-center gap-2 ${location.pathname.endsWith('upcoming-exams') ? 'text-[#00ffff]' : 'text-white'}`}>
+                        <TbBrandNextjs />
+                            <span>Upcoming Exam</span>
+                        </p>
+                    </li>
+                    <li>
+                        <p onClick={() => { handleLink('previous-exams') }} className={`cursor-pointer text-[14px] flex items-center gap-2 ${location.pathname.endsWith('previous-exams') ? 'text-[#00ffff]' : 'text-white'}`}>
+                        <BiSolidSkipPreviousCircle />
+                            <span>Previous Exam</span>
+                        </p>
+                    </li>
                     {
                         auth['user-credentials'].user.userType === 'ADMIN' ?
                             <li>
@@ -67,20 +81,12 @@ const Sidebar = () => {
                     {
                         (auth['user-credentials'].user.userType === 'ADMIN' || auth['user-credentials'].user.userType === 'EXAM_OC') ?
                             <li>
-                                <p onClick={()=>{handleLink('view-attendance')}} className={`cursor-pointer text-[14px] flex items-center gap-2 ${location.pathname.endsWith('view-attendance') ? 'text-[#00ffff]' : 'text-white'}`}>
+                                <p onClick={() => { handleLink('exam-report') }} className={`cursor-pointer text-[14px] flex items-center gap-2 ${location.pathname.endsWith('view-attendance') ? 'text-[#00ffff]' : 'text-white'}`}>
                                     <FaEye />
-                                    <span>View Attendance</span>
+                                    <span>Exam Report</span>
                                 </p>
                             </li> : ''}
-                    {
-                        auth['user-credentials'].user.userType !== 'INVIGILATOR' ?
-                            <li>
-                                <p onClick={() => { handleLink('workspace') }} className={`cursor-pointer text-[14px] flex items-center gap-2 ${location.pathname.endsWith('workspace') ? 'text-[#00ffff]' : 'text-white'}`}>
-                                    <MdLibraryBooks />
-                                    <span>Workspace</span>
-                                </p>
-                            </li> : ''}
-                    <li onClick={() => { handleLink('/') }} className='my-7 cursor-pointer'>
+                    <li onClick={() => { handleLink('/') }} className='pt-7 my-7 cursor-pointer'>
                         <div className={`text-[14px] flex items-center gap-2 text-white`}>
                             <RiLogoutBoxFill />
                             <span>Logout</span>

@@ -234,14 +234,14 @@ const Workspace = () => {
     }
   }
   const handleChangeExam = (indexFloor, floorNumber, room) => {
-    
+
 
     const newExam = exam;
     // newExam.examLocations = exam.examLocations.filter((ele, index) => index !== indexFloor);
 
     // // console.log("new exam with ele not  changed",  newExam);
 
-    const tmpRooms = (exam.examLocations.find(ele => ele.floorNumber==floorNumber)).rooms;
+    const tmpRooms = (exam.examLocations.find(ele => ele.floorNumber == floorNumber)).rooms;
     // // console.log("fecthed room:", tmpRooms);
 
     const newRooms = tmpRooms.filter(ele => ele.roomNumber !== room.roomNumber);
@@ -251,12 +251,12 @@ const Workspace = () => {
     newRooms.push(room);
     // // console.log(newRooms);
     // // console.log("pushing newRooms[] to newExam.examLocations ", newExam, newExam.examLocations);
-// // console.log("changed values: ", floorNumber, newRooms);
+    // // console.log("changed values: ", floorNumber, newRooms);
     // newExam.examLocations.push({
     //   floorNumber, rooms: newRooms
     // })
-    for(let i = 0; i < newExam.examLocations.length; i++) {
-      if(newExam.examLocations[i].floorNumber == floorNumber) {
+    for (let i = 0; i < newExam.examLocations.length; i++) {
+      if (newExam.examLocations[i].floorNumber == floorNumber) {
         newExam.examLocations[i].rooms = newRooms;
       }
     }
@@ -266,8 +266,7 @@ const Workspace = () => {
     setExam(newExam);
 
   }
-
-
+  
   const getSortedFloors = (floors) => {
     return floors.slice().sort((a, b) => {
       const floorNumberA = parseInt(a.floorNumber, 10);
@@ -278,26 +277,26 @@ const Workspace = () => {
 
   const getSortedRooms = (rooms) => {
     const sortedRooms = rooms.slice().sort((a, b) => {
-        // // console.log(a, b)
-        const roomNumberA = String(a?.roomNumber || '').toUpperCase();
-        const roomNumberB = String(b?.roomNumber || '').toUpperCase();
+      // // console.log(a, b)
+      const roomNumberA = String(a?.roomNumber || '').toUpperCase();
+      const roomNumberB = String(b?.roomNumber || '').toUpperCase();
 
-        const isNumericA = /^\d+$/.test(roomNumberA);
-        const isNumericB = /^\d+$/.test(roomNumberB);
+      const isNumericA = /^\d+$/.test(roomNumberA);
+      const isNumericB = /^\d+$/.test(roomNumberB);
 
-        if (isNumericA && isNumericB) {
-            return parseInt(roomNumberA, 10) - parseInt(roomNumberB, 10);
-        } else if (isNumericA) {
-            return -1;
-        } else if (isNumericB) {
-            return 1;
-        } else {
-            return roomNumberA.localeCompare(roomNumberB, undefined, { numeric: true });
-        }
+      if (isNumericA && isNumericB) {
+        return parseInt(roomNumberA, 10) - parseInt(roomNumberB, 10);
+      } else if (isNumericA) {
+        return -1;
+      } else if (isNumericB) {
+        return 1;
+      } else {
+        return roomNumberA.localeCompare(roomNumberB, undefined, { numeric: true });
+      }
     });
     rooms = sortedRooms;
     return sortedRooms;
-};
+  };
 
   return (
     <div className='p-3 '>
@@ -447,32 +446,32 @@ const Workspace = () => {
       {
         exam?.examLocations.length !== 0 &&
         <div id="answer-script-counting" className="my-7 answer-script-counting h-[50vh] overflow-y-scroll">
-        <h2 className='text-xl font-medium '>Count the answer-scripts</h2>
-        <div className='border border-slate-400 min-w-[1047px] overflow-x-scroll'>
-          <div className="fields w-full flex border-b border-slate-400">
-            <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Floor</p>
-            <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Room</p>
-            <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Expected Scripts</p>
-            <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Actual Scripts</p>
-            <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Remarks</p>
-            <p className="w-[16.66%] text-center py-2 text-[14px]">Action</p>
-          </div>
-          <div className=''>
-       
-            {
-              exam  && getSortedFloors(exam.examLocations).map((floor, i) => {
-                return getSortedRooms(floor.rooms).map((room, j) => (
-                  <AnswerScriptCountingRow key={`row-${i + j}`} indexFloor={i} floorNumber={floor.floorNumber} room={room} handleChangeExam={handleChangeExam} handleSaveExam={handleSaveExam} />
-                ))
-              })
-            }
+          <h2 className='text-xl font-medium '>Count the answer-scripts</h2>
+          <div className='border border-slate-400 min-w-[1047px] overflow-x-scroll'>
+            <div className="fields w-full flex border-b border-slate-400">
+              <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Floor</p>
+              <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Room</p>
+              <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Expected Scripts</p>
+              <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Actual Scripts</p>
+              <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Remarks</p>
+              <p className="w-[16.66%] text-center py-2 text-[14px]">Action</p>
+            </div>
+            <div className=''>
 
-            
+              {
+                exam && getSortedFloors(exam.examLocations).map((floor, i) => {
+                  return getSortedRooms(floor.rooms).map((room, j) => (
+                    <AnswerScriptCountingRow key={`row-${i + j}`} indexFloor={i} floorNumber={floor.floorNumber} room={room} handleChangeExam={handleChangeExam} handleSaveExam={handleSaveExam} />
+                  ))
+                })
+              }
 
+
+
+            </div>
           </div>
-        </div>
-            
-      </div>}
+
+        </div>}
     </div>
   )
 }

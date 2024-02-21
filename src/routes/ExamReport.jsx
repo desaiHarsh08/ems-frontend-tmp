@@ -7,7 +7,7 @@ import * as XLSX from 'xlsx';
 import { toogleSidebar } from '../app/features/sidebarToggleSlice';
 
 
-const ViewAttendance = () => {
+const ExamReport = () => {
 
   const navigate = useNavigate()
 
@@ -196,4 +196,4 @@ const ViewAttendance = () => {
   )
 }
 
-export default ViewAttendance
+export default ExamReport

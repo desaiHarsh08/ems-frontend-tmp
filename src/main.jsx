@@ -9,13 +9,14 @@ import { store } from './app/store.js'
 import Dashboard from './routes/Dashboard.jsx'
 import DashboardHome from './components/route_components/dashboard/DashboardHome.jsx'
 import CreateExam from './routes/CreateExam.jsx'
-import ViewAttendance from './routes/ViewAttendance.jsx'
+import ExamReport from './routes/ExamReport.jsx'
 import Exam from './routes/Exam.jsx'
 import FloorsDisplay from './components/route_components/exam/FloorsDisplay.jsx'
-import RoomNumberSlice from './app/features/roomNumberSlice.js'
 import RoomsDisplay from './routes/RoomsDisplay.jsx'
 import SeatsDisplay from './routes/SeatsDisplay.jsx'
 import Workspace from './routes/Workspace.jsx'
+import UpcomingExams from './routes/UpcomingExams.jsx'
+import PreviousExams from './routes/PreviousExam.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <App />, children: [{ path: '', element: <Root /> }] },
@@ -31,12 +32,20 @@ const router = createBrowserRouter([
         ]
       },
       {
+        path: 'upcoming-exams',
+        element: <UpcomingExams />
+      },
+      {
+        path: 'previous-exams',
+        element: <PreviousExams />
+      },
+      {
         path: 'create-exam',
         element: <CreateExam />
       },
       {
-        path: 'view-attendance',
-        element: <ViewAttendance />
+        path: 'exam-report',
+        element: <ExamReport />
       },
       {
         path: ':examId',

@@ -27,7 +27,7 @@ const RoomsDisplay = () => {
 
     useEffect(() => {
         // console.log(document.getElementById('bread-crumb'))
-        document.getElementById('bread-crumb').classList.remove('invisible')
+        // document.getElementById('bread-crumb').classList.remove('invisible')
         fetchRoomData();
         if(auth['user-credentials'].user.userType === 'INVIGILATOR') {
             const tmp = rooms.find(ele => ele.roomNumber == auth['user-credentials'].user.roomNumber.toString());

@@ -468,7 +468,7 @@ const CreateExam = () => {
     }
 
     return (
-        <div id='create-exam' className='create-exam m-3 text-[14px]'>
+        <div id='create-exam' className='create-exam h-full overflow-y-auto m-3 text-[14px]'>
             <div className='heading'>
                 <h1 className='text-2xl font-semibold my-3'>Create Exam</h1>
                 <div className='w-full h-[2px] bg-blue-500 rounded-md'></div>

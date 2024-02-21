@@ -11,7 +11,7 @@ const App = () => {
   const loading = useSelector((state)=> state.loadingStatus);
 
   return (
-    <div className='App h-screen '>
+    <div className='App h-screen  '>
       {/* Loading COMPONENT */}
       <div id="loading-container" className="loading-container w-full">
       {loading && <Loading />}

@@ -24,7 +24,7 @@ const FloorsDisplay = () => {
     const [floorNumberForNonAdmin, setFloorNumberForNonAdmin] = useState();
 
     useEffect(() => {
-        document.getElementById('bread-crumb').classList.remove('invisible')
+        // document.getElementById('bread-crumb').classList.remove('invisible')
         fetchFloorStatus();
     }, []);
 
@@ -119,6 +119,7 @@ const FloorsDisplay = () => {
                 })
             }
 
+{console.log('here')}
             {
             // // console.log(floorNumberForNonAdmin)
                 exam && exam.examLocations && floorNumberForNonAdmin &&

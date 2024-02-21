@@ -68,6 +68,10 @@
 .add-members-card {
   width: 33% !important;
 }
+
+.add-members-bar-container {
+  width: calc(100% - 48px);
+}
 @media (max-width: 990px) {
   .sidebar {
     position: absolute;

@@ -59,7 +59,7 @@ const Root = () => {
         dispatch(toggleLoadingStatus());
         try {
             const data = await axios.post(`${host}/api/otp/generate`, { email: credentials.email });
-            // console.log(data);
+            console.log(data);
             Swal.fire({
                 title: 'Alert',
                 text: 'An OTP is been sent to your provided email address...!',
@@ -102,7 +102,7 @@ const Root = () => {
     }
 
     return (
-        <div className='w-full h-full border text-slate-500'>
+        <div className='w-full h-full text-slate-500'>
             {/* APP NAME */}
             <div id="app-name" className="app-name flex h-[10%] items-center justify-center">
                 <h1 className='text-2xl font-semibold uppercase text-center'>Exam &nbsp;Management &nbsp;App</h1>
