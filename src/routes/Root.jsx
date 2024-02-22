@@ -59,7 +59,7 @@ const Root = () => {
         dispatch(toggleLoadingStatus());
         try {
             const data = await axios.post(`${host}/api/otp/generate`, { email: credentials.email });
-            console.log(data);
+            // console.log(data);
             Swal.fire({
                 title: 'Alert',
                 text: 'An OTP is been sent to your provided email address...!',

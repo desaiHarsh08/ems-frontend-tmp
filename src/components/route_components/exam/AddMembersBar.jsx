@@ -70,6 +70,11 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
             if (getInfo().userType === 'INVIGILATOR') {
                 memberObj["roomNumber"] = excelData[i]["Room no"];
             }
+            if (getInfo().userType === 'EXAMINER') {
+                memberObj["from"] = '';
+                memberObj["to"] = '';
+                memberObj["total"] = 0;
+            }
             formatedData.push(memberObj);
         }
         console.log(formatedData);
@@ -92,7 +97,7 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
             } catch (error) {
                 console.log(error);
             }
-            let ps = (((i+1)*100)/formatedData.length).toFixed(1);
+            let ps = (((i + 1) * 100) / formatedData.length).toFixed(1);
             setProgressStatus(ps);
         }
         document.getElementById('progress-container').classList.toggle('invisible');
@@ -106,7 +111,7 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
 
     return (
         <>
-            <div className={`w-[56vh] flex gap-[2px]  z-10 absolute top-0 ${!toogleAddMembersBar ? 'translate-x-[1000px] hidden' : ''} top-0 right-0 bottom-0 transition-all duration-300`}>
+            <div className={`w-[45vh] md:w-1/3 flex gap-[4px] space-y-2  z-10 absolute top-0 ${!toogleAddMembersBar ? 'translate-x-[1000px] hidden' : ''} top-0 right-0 bottom-0 transition-all duration-300`}>
                 <div id="close-add-members-bar" className="close-add-members-bar w-12 flex justify-center py-1 text-4xl">
                     <div className='hover:bg-slate-50 border border-blue-400 h-12 w-12 flex justify-center bg-white cursor-pointer items-center'>
                         <button className='' onClick={handleCloseAddMemberBar}><IoCloseSharp /></button>
@@ -117,10 +122,50 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
                         <h3 className=' text-center text-xl font-medium'>{labelAddMembersBar}</h3>
                     </div>
                     <form onSubmit={handleUploadAddMembers}>
-                        <input type="file" name='file' id='add-member-file' />
-                        <button className='bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-medium'>Upload</button>
+                        <input type="file" name='file' id='add-member-file' className='my-2' />
+                        <button className=' my-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-medium'>Upload</button>
                     </form>
                     {/* <p className='my-3'>Available: 0</p> */}
+
+                    <div className='template-info'>
+                        <p className='my-3 font-medium'>NOTE: -</p>
+                        <ol style={{ listStyle: '1' }} className='space-y-4'>
+                            <li className='flex gap-2'>
+                                <p>1.</p>
+                                <p>The file to be uploaded must be in XLSX format.</p>
+                            </li>
+                            <li className='flex gap-2'>
+                                <p>2.</p>
+                                <p>
+                                    <p>The file should contain the following columns with precise names:</p>
+                                    <ul className='ml-2 my-1'>
+                                        {
+                                            labelAddMembersBar === "Add Examiners" &&
+                                            <li>Name of Examiner</li>
+                                        }
+                                        {
+                                            labelAddMembersBar === "Add support staff" &&
+                                            <li>Name of Support staff</li>
+                                        }
+                                        {
+                                            labelAddMembersBar === "Add invigilator" &&
+                                            <>
+                                                <li>Name of Invigilators</li>
+                                                <li>Room No</li>
+                                            </>
+                                        }
+                                        <li>Email</li>
+                                        <li>Mobile</li>
+                                    </ul>
+                                </p>
+
+
+
+
+
+                            </li>
+                        </ol>
+                    </div>
                 </div>
             </div>
 

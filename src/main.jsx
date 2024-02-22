@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { RouterProvider, createBrowserRouter, createHashRouter } from 'react-router-dom'
 import Root from './routes/Root.jsx'
 import { Provider } from 'react-redux'
 import { store } from './app/store.js'
@@ -18,7 +18,7 @@ import Workspace from './routes/Workspace.jsx'
 import UpcomingExams from './routes/UpcomingExams.jsx'
 import PreviousExams from './routes/PreviousExam.jsx'
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   { path: '/', element: <App />, children: [{ path: '', element: <Root /> }] },
   { 
     path: '/dashboard', 

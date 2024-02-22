@@ -14,7 +14,7 @@ const ExamCard = ({ exam, bgColor, examType }) => {
     const examIds = JSON.parse(localStorage.getItem('examids'));
 
     const handleExamClick = (exam) => {
-        if (examType !== 'RECENT') { return; }
+        // if (examType !== 'RECENT') { return; }
         if (auth['user-credentials'].user?.userType !== 'ADMIN' && (examIds.indexOf(exam._id) == -1)) {
             alert(`examId: ${exam._id}\nuser examid: ${auth['user-credentials'].user?.examId}`);
             return;

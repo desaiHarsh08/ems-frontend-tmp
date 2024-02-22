@@ -17,6 +17,7 @@ import { setExam, setExamActual, updateExam } from '../app/features/examSlice';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
+import AllotAnswerScript from '../components/route_components/exam/AllotAnswerScript';
 
 const Exam = () => {
 
@@ -35,6 +36,7 @@ const Exam = () => {
     const [toogleCollectAnswerScriptDisplay, setToogleCollectAnswerScriptDisplay] = useState(false);
     const [toogleAssignMarksDisplay, setToogleAssignMarksDisplay] = useState(false);
     const [toogleAddMembersBar, setToogleAddMembersBar] = useState(false);
+    const [toogleAllot, setToogleAllot] = useState(false);
     const [labelAddMembersBar, setLabelAddMembersBar] = useState('');
 
     useEffect(()=> {
@@ -60,8 +62,11 @@ const Exam = () => {
     const handleExamFunctionClick = async (label) => {
         console.log(label);
         if ((label.toLowerCase() === "add examiners") || (label.toLowerCase() === "add support staff") || (label.toLowerCase() === "add invigilator")) {
-            setToogleAddMembersBar(true);
-            setLabelAddMembersBar(label)
+            
+                setToogleAddMembersBar(true);
+                setLabelAddMembersBar(label)
+            
+            
         }
 
         else if (label.toLowerCase() === "mark attendance") {
@@ -75,7 +80,12 @@ const Exam = () => {
             setToogleExamFunctionsDisplay(false);
             setToogleAttendanceDisplay(false);
         }
-        else if (label.toLowerCase() === "allot answer script") {}
+        else if (label.toLowerCase() === "allot answer script") {
+            setToogleExamFunctionsDisplay(false);
+            setToogleAllot(true)
+
+
+        }
         else if (label.toLowerCase() === "exam report") {
             await handleExamReport();
         }
@@ -83,6 +93,7 @@ const Exam = () => {
             setToogleCollectAnswerScriptDisplay(false);
             setToogleExamFunctionsDisplay(true);
             setToogleAttendanceDisplay(false);
+            setToogleAllot(false);
         }
     }
 
@@ -261,20 +272,21 @@ const Exam = () => {
                     <AddMembersBar toogleAddMembersBar={toogleAddMembersBar} setToogleAddMembersBar={setToogleAddMembersBar} labelAddMembersBar={labelAddMembersBar} />
 
                 </> :
-                 (auth['user-credentials'].user.userType !== 'INVIGILATOR' && auth['user-credentials'].user.userType !== 'EXAMINER') &&
                 <div>
                     <button onClick={() => { handleExamFunctionClick('display_functions') }} className='bg-slate-200 pl-1 pr-2 py-2 rounded-md '>Exam Functions</button>
-                </div>
+                </div> 
             }
 
 
             {/* BREAD-CRUMB */}
 
             {
-                toogleExamFunctionsDisplay === false ?
+                !toogleExamFunctionsDisplay ?
                     <div id='bread-crumb' className=' flex rounded-md my-1'>
-                        <ul className={`${location.pathname.includes(`/dashboard/${exam._id}/floor-${floorNumber}`) ? 'bg-slate-200' : ''} text-slate-500 text-[14px] p-1 flex gap-2`}>
-                            {location.pathname.includes(`/dashboard/${exam._id}/floor-${floorNumber}`) ?
+                        
+                        <ul className={`${location.pathname.includes(`/dashboard/${exam._id}/floor-${floorNumber}`) ? 'bg-slate-300' : ''} text-slate-500 text-[14px] p-1 flex gap-2`}>
+                            {console.log("url:", location.pathname, "window:", window.location.href)}
+                            {window.location.href.includes(`#/dashboard/${exam._id}/floor-${floorNumber}`) ?
                                 <>
                                     <li id='floorNav'>
                                         <p className='cursor-pointer' onClick={floorNav} to={`/dashboard/${exam._id}`} >Floors</p>
@@ -285,7 +297,7 @@ const Exam = () => {
                                 </>
                                 : ''}
                             {
-                                location.pathname.endsWith(`/dashboard/${exam._id}/floor-${floorNumber}/room-${roomNumber}`) ?
+                                window.location.href.endsWith(`/dashboard/${exam._id}/floor-${floorNumber}/room-${roomNumber}`) ?
                                     <>
                                         <li id='roomNav'>
                                             <p className='cursor-pointer' onClick={roomNav} to={`/dashboard/${exam._id}/floor-${floorNumber}`} >Rooms</p>
@@ -342,6 +354,12 @@ const Exam = () => {
                 </div>}
 
 
+            {/* ALLOT ANSWER-SCRIPT */}
+            {
+                toogleAllot === true ?
+                    <AllotAnswerScript />
+                 : ''
+            }
 
         </div>
     )
