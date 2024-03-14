@@ -12,7 +12,7 @@ import { IoPersonAddOutline } from "react-icons/io5";
 import { BsFillCollectionFill } from "react-icons/bs";
 import { MdOutlineBallot } from "react-icons/md";
 import AddMembersBar from '../components/route_components/exam/AddMembersBar';
-import AnswerScriptCountingRow from '../components/route_components/workspace/AnswerScriptCountingRow';
+import AnswerScriptCountingRow from '../components/route_components/exam/AnswerScriptCountingRow';
 import { setExam, setExamActual, updateExam } from '../app/features/examSlice';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
@@ -341,7 +341,14 @@ const Exam = () => {
                             {
                                 exam && getSortedFloors(exam.examLocations).map((floor, i) => {
                                     return getSortedRooms(floor.rooms).map((room, j) => (
-                                        <AnswerScriptCountingRow key={`row-${i + j}`} indexFloor={i} floorNumber={floor.floorNumber} room={room} handleChangeExam={handleChangeExam} handleSaveExam={handleSaveExam} />
+                                        <AnswerScriptCountingRow 
+                                            key={`row-${i + j}`} 
+                                            indexFloor={i} 
+                                            floorNumber={floor.floorNumber} 
+                                            room={room} 
+                                            handleChangeExam={handleChangeExam} 
+                                            handleSaveExam={handleSaveExam} 
+                                        />
                                     ))
                                 })
                             }

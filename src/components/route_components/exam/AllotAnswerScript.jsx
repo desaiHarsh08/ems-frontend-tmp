@@ -13,7 +13,7 @@ const AllotAnswerScript = () => {
 
     const [examinersArr, setExaminersArr] = useState();
     const [studentsArr, setStudentsArr] = useState();
-
+const [isLoaded, setIsLoaded] = useState(false);
     const [stats, setStats] = useState({
         totalStudents: 0,
         distributed: 0,
@@ -28,10 +28,20 @@ const AllotAnswerScript = () => {
     }])
 
     useEffect(() => {
-        if(!examinersArr || !studentsArr) {
-            fetchExaminers();
-            fetchStudents();
+        // if(!examinersArr || !studentsArr) {
+        //     fetchExaminers();
+        //     fetchStudents();
+        // }
+
+        const fetchData = async () => {
+            await fetchExaminers();
+            await fetchStudents();
+        };
+    
+        if (!examinersArr || !studentsArr) {
+            fetchData();
         }
+
     }, [examinersArr, studentsArr]);
 
 
@@ -50,6 +60,7 @@ const AllotAnswerScript = () => {
 
 
     const fetchStudents = async () => {
+        setIsLoaded(true);
         const res = await axios.post(`${host}/api/student/get-student-by-date-name`, {
             searchObj: {
                 examName: exam.examName,
@@ -64,25 +75,38 @@ const AllotAnswerScript = () => {
             }
         });
         const dataArr = res.data.payload;
-
+        console.log(dataArr)
         for (let i = 0; i < dataArr.length; i++) {
             if (dataArr[i].studentUID.length < 10) {
                 dataArr[i].studentUID = dataArr[i].studentUID.padStart(10, 0);
             }
         }
         let distributed = 0;
+        if(!examinersArr) { return; }
+
+        let totalAnswerScripts = 0;
+        for(let i = 0; i < exam.examLocations.length; i++) {
+            let floor = exam.examLocations[i];
+            let rooms = floor.rooms;
+            for(let j = 0; j < rooms.length; j++) {
+                console.log("in allot as loop, room:", rooms[j]);
+                console.log(`totalAnswerSciprts = ${totalAnswerScripts} + ${rooms[j].answerScript.actual}`);
+                totalAnswerScripts += rooms[j].answerScript.actual;
+            }
+        }
+        console.log("totalAnswerScripts:", totalAnswerScripts)
+
         for (let i = 0; i < examinersArr.length; i++) {
-            distributed += Number(examinersArr[i].total);
+            if(Number(examinersArr[i].total)) {
+                distributed += Number(examinersArr[i].total);
+            }
         }
 
-        console.log("initial:", { totalStudents: dataArr.length, distributed, left: dataArr.length - distributed })
-        setStats({ totalStudents: dataArr.length, distributed, left: dataArr.length - distributed });
-
-        // Sort the dataArr based on the 'studentUID' property
-        // const sortedDataArr = [...dataArr].sort((a, b) => a.studentUID.localeCompare(b.studentUID));
-        // setStudentsArr(sortedDataArr);
+        console.log("initial:", { totalStudents: totalAnswerScripts, distributed, left: dataArr.length - distributed })
+        setStats({ totalStudents: totalAnswerScripts, distributed, left: totalAnswerScripts - distributed });
 
         setStudentsArr(dataArr);
+        setIsLoaded(false);
     }
 
     const updateExaminers = async (examiner) => {
@@ -125,7 +149,9 @@ const AllotAnswerScript = () => {
 
         let sum = 0;
         for (let i = 0; i < newExaminers.length; i++) {
-            sum += Number(newExaminers[i].total);
+            if(Number(newExaminers[i].total)) {
+                sum += Number(newExaminers[i].total);
+            }
         }
 
         if (sum > studentsArr?.length) {
@@ -142,6 +168,9 @@ const AllotAnswerScript = () => {
             if (newExaminers[i].total == 0) {
                 newExaminers[i].from = '';
                 newExaminers[i].to = '';
+                continue;
+            }
+            if(!Number(newExaminers[i].total)) {
                 continue;
             }
             distributed += Number(newExaminers[i].total);
@@ -165,15 +194,15 @@ const AllotAnswerScript = () => {
             <h2 className='my-3 mb-7 text-xl font-medium'>Allot the answer-scripts</h2>
             {examinersArr && examinersArr?.length !== 0 && <div className="stats flex gap-2 my-4">
                 <div className=" stats-card font-medium space-y-2 py-3 text-center border rounded-md border-slate-300 w-1/3">
-                    <p className='text-xl'>{stats.totalStudents}</p>
+                    <p className='text-xl'>{!isLoaded ?  stats.totalStudents : '...'}</p>
                     <p>Total Students</p>
                 </div>
                 <div className=" stats-card font-medium space-y-2 py-3 text-center border rounded-md border-slate-300 w-1/3">
-                    <p className='text-xl'>{stats.distributed}</p>
+                    <p className='text-xl'>{!isLoaded ?stats.distributed : '...'}</p>
                     <p>Distributed</p>
                 </div>
                 <div className=" stats-card font-medium space-y-2 py-3 text-center border rounded-md border-slate-300 w-1/3">
-                    <p className='text-xl'>{stats.left}</p>
+                    <p className='text-xl'>{!isLoaded ? stats.left : '...'}</p>
                     <p>Left</p>
                 </div>
             </div>}

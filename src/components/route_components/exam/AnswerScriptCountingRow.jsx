@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux';
+import Swal from 'sweetalert2';
 
 const AnswerScriptCountingRow = ({ indexFloor, floorNumber, room, handleChangeExam, handleSaveExam }) => {
     // console.log(floorNumber, room, indexFloor)
-    const [actual, setActual] = useState(room.answerScript?.actual || room.seatsArr[0]);
+    const [actual, setActual] = useState(room.answerScript?.actual);
     const [remark, setRemark] = useState(room.answerScript.remark);
     
     // const handleChange = (e) => {
@@ -59,6 +60,14 @@ const AnswerScriptCountingRow = ({ indexFloor, floorNumber, room, handleChangeEx
         };
     
         const { name, value } = e.target;
+        if(value === '' ) {
+            Swal.fire({
+                title: 'Alert',
+                text: 'Please provide the remarks...!',
+                icon: 'error', // Options: 'success', 'error', 'warning', 'info'
+            });
+            return;
+        }
     
         if (name === 'actual') {
             newRoom.answerScript.actual = Number(value);

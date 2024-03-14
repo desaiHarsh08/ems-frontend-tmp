@@ -22,7 +22,7 @@ const PreviousExams = () => {
     // console.log(auth, examIds)
 
 
-
+    const [examsArr, setExamsArr] = useState([]);
     const [examsObj, setExamsObj] = useState();
     const [examDone, setExamsDone] = useState([]);
 
@@ -32,8 +32,8 @@ const PreviousExams = () => {
             try {
                 // console.log(auth["user-credentials"].accessToken)
                 // console.log(auth["user-credentials"].refreshToken)
-                const examsData = await axios.get(
-                    `${host}/api/exam/recent-upcoming-exams`,
+                const response = await axios.get(
+                    `${host}/api/exam/get-all`,
                     {
                         headers: {
                             accessToken: auth["user-credentials"].accessToken,
@@ -42,10 +42,10 @@ const PreviousExams = () => {
                         }
                     }
                 );
-                // console.log('in ef', examsData.data?.payload);
-                setExamsObj(examsData.data?.payload);
+                console.log('in ef', response.data.payload);
+                setExamsArr(response.data?.payload);
             } catch (error) {
-                // console.log(error);
+                console.log(error);
             }
         })();
 
@@ -143,24 +143,35 @@ const PreviousExams = () => {
                 <h1 className='text-xl sm:text-2xl uppercase font-semibold text-center sm:my-7 mb-7  sm:text-left '>Exam&nbsp; Attendance&nbsp; Management</h1>
                 <span>TODO</span>
                 {/* PREVIOUS EXAM(S) */}
-                {/* <div id="upcoming-exams" className='my-7'>
+                <div id="upcoming-exams" className='my-7'>
                     <h2 className='text-xl font-semibold'>Previous Exams</h2>
-                    {examsObj && examsObj?.upcomingExams?.length == 0 ? <div className='py-3'>
-                        <p>No previous exams found!</p>
-                    </div> : ''}
-
-                    {
-                        examsObj && examsObj?.upcomingExams?.length != 0 ?
-                            <div id='exams-cards' className='flex min-w-[1078px] h-[150px] overflow-x-auto my-3 gap-2' >
-                                {
-                                    examsObj && examsObj.upcomingExams?.map((exam, index) => (
-                                        <ExamCard key={`upcoming-exam-${index}`} exam={exam} bgColor={'bg-blue-500'} examType={"UPCOMING"} />
-                                    ))
-                                }
-                            </div> 
-                        : ''
+                    {examsArr?.length == 0 ?
+                        <div className='py-3'>
+                            <p>No previous exams found!</p>
+                        </div> : ''
                     }
-                </div> */}
+                    {console.log(examsArr)}
+                    {
+                        examsArr?.length != 0 ?
+                            <div id='exams-cards' className='flex min-w-[90vw] overflow-x-auto my-3 gap-2' >
+                                {
+                                    examsArr?.map((exam, index) => {
+                                        if(auth['user-credentials'].user.userType === 'ADMIN') {
+                                            return <ExamCard key={`upcoming-exam-${index}`} exam={exam} bgColor={'bg-blue-500'} examType={"UPCOMING"} />
+
+                                        }
+                                        else if(auth['user-credentials'].user.userType !== 'ADMIN' && examIds.includes(exam._id)) {
+                                            return <ExamCard key={`upcoming-exam-${index}`} exam={exam} bgColor={'bg-blue-500'} examType={"UPCOMING"} />
+                                        }
+                                        else {
+                                            return '';
+                                        }
+                                    })
+                                }
+                            </div>
+                            : ''
+                    }
+                </div>
             </div>
         </div >
     )
