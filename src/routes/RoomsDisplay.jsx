@@ -18,9 +18,13 @@ const RoomsDisplay = () => {
     const auth = useSelector((state) => state.auth);
     const loading = useSelector((state) => state.loadingStatus);
     const floorNumber = (useSelector((state) => state.floorNumber)).floorNumber;
+    console.log(floorNumber)
+if(!floorNumber) {
+    return 'no floor selected';
+}
 
+    console.log(exam.examLocations.find((ele) => ele.floorNumber == floorNumber));
     const { rooms } = exam.examLocations.find((ele) => ele.floorNumber == floorNumber);
-    // console.log(rooms);
 
     const [roomsDone, setRoomsDone] = useState([]);
     const [userRoom, setUserRoom] = useState(null);

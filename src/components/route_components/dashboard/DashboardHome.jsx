@@ -153,7 +153,7 @@ const DashboardHome = () => {
                                     <p>Today there is no exam!</p>
                                 </div> : '  '
                         }
-
+{console.log(examsObj?.recentExams)}
                         {
                             examsObj && examsObj.recentExams?.map((exam, index) => {
 
@@ -162,12 +162,9 @@ const DashboardHome = () => {
                                 ) {
                                     return <ExamCard key={`recent-exam-${index}`} exam={exam} bgColor={examDone.includes(exam.examName) ? 'bg-green-400' : 'bg-orange-400'} examType={"RECENT"} />
                                 }
-                                else if (((auth['user-credentials'].user.userType !== 'ADMIN') && examIds.includes(exam._id))) {
+                                else if (examIds.includes(exam._id)) {
                                     return <ExamCard key={`recent-exam-${index}`} exam={exam} bgColor={examDone.includes(exam.examName) ? 'bg-green-400' : 'bg-orange-400'} examType={"RECENT"} />
 
-                                }
-                                else {
-                                    return <p>No exam got scheduled!</p>
                                 }
 
                             })

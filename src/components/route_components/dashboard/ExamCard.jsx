@@ -21,7 +21,7 @@ const ExamCard = ({ exam, bgColor, examType }) => {
         }
         // console.log(exam)
         dispatch(setExam({ exam }));
-        navigate(`${exam._id}`, { replace: true });
+        navigate(`/dashboard/${exam._id}`, { replace: true });
     }
 
     return (
@@ -37,11 +37,11 @@ const ExamCard = ({ exam, bgColor, examType }) => {
                             <li className='w-full flex flex-col justify-center items-center'>
                                 <div className='flex w-full '>
                                     <p className='w-1/2 text-center'>Date</p>
-                                    <p className='w-1/2 text-center'>{exam.examDate}</p>
+                                    <p className='w-1/2 text-center'>{exam.examDate.toString().substring(0, 10)}</p>
                                 </div>
                                 <div className='flex w-full'>
                                     <p className='w-1/2 text-center'>Time</p>
-                                    <p className='w-1/2 text-center'>{exam.examTime}</p>
+                                    <p className='w-1/2 text-center'>{exam.examTime.toString().substring(0, 9)}</p>
                                 </div>
                             </li>
                         </ul>

@@ -101,7 +101,22 @@ const AnswerScriptCountingRow = ({ indexFloor, floorNumber, room, handleChangeEx
                     }
                 </li>
                 <li className='py-2 w-[16.66%]  text-center flex justify-center items-center'>
-                    <button onClick={(e)=>{handleSaveExam(e, JSON.parse(localStorage.getItem('exam')))}} className='bg-blue-500 text-white rounded-md hover:bg-blue-600 font-medium px-4 py-2'>Save</button>
+                    <button 
+                        onClick={(e)=>{
+                            handleSaveExam(e, JSON.parse(localStorage.getItem('exam')));
+                            e.target.classList.add('bg-green-500');
+                            e.target.classList.add('hover:bg-green-600');
+                            e.target.classList.remove('bg-blue-500');
+                            e.target.classList.remove('hover:bg-blue-600');
+                            Swal.fire({
+                                title: 'Alert',
+                                text: 'Saved successfully...!',
+                                icon: 'success', // Options: 'success', 'error', 'warning', 'info'
+                            });
+                        }} 
+                        className='bg-blue-500 text-white rounded-md hover:bg-blue-600 font-medium px-4 py-2'>
+                        Save
+                    </button>
                 </li>
             </ul>
         </div>

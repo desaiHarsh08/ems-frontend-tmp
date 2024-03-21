@@ -4,6 +4,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
+import { parse } from 'date-fns';
 
 const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMembersBar }) => {
 
@@ -13,21 +14,62 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
 
     const [progressStatus, setProgressStatus] = useState(0);
 
-    const extractFileData = (file) => {
-        return new Promise((resolve, reject) => {
+    // const extractFileData = (file) => {
+    //     return new Promise((resolve, reject) => {
+    //         const reader = new FileReader();
+    //         reader.onload = (e) => {
+    //             const dataFromFile = e.target.result;
+    //             const workbook = XLSX.read(dataFromFile, { type: 'array' });
+    //             const sheetName = workbook.SheetNames[0];
+    //             const worksheet = workbook.Sheets[sheetName];
+    //             const data = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+    //             resolve(data);
+    //         };
+    //         reader.onerror = (error) => reject(error);
+    //         reader.readAsArrayBuffer(file);
+    //     });
+    // }
+
+    const [excelData, setExcelData] = useState([]);
+
+    const handleFile = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const dataFromFile = e.target.result;
-                const workbook = XLSX.read(dataFromFile, { type: 'array' });
-                const sheetName = workbook.SheetNames[0];
+                const workbook = XLSX.read(dataFromFile, { cellDates: true, type: 'array' });
+                const sheetName = workbook.SheetNames[0]; // Assumes the first sheet
                 const worksheet = workbook.Sheets[sheetName];
-                const data = XLSX.utils.sheet_to_json(worksheet, { raw: true });
-                resolve(data);
+    
+                // Modify the option to parse dates with the format 'dd-mm-yyyy'
+                const data = XLSX.utils.sheet_to_json(worksheet, { raw: true, dateNF: 'dd-mm-yyyy' });
+                setExcelData(data);
+                console.log('Parsed Excel Data:', data);
             };
-            reader.onerror = (error) => reject(error);
             reader.readAsArrayBuffer(file);
-        });
-    }
+        }
+    };
+    
+
+    // const extractFileData = (file) => {
+    //     return new Promise((resolve, reject) => {
+    //         const reader = new FileReader();
+    //         reader.onload = (e) => {
+    //             const dataFromFile = e.target.result;
+    //             const workbook = XLSX.read(dataFromFile, { type: 'array' });
+    //             const sheetName = workbook.SheetNames[0];
+    //             const worksheet = workbook.Sheets[sheetName];
+
+    //             // Modify the option to keep dates as strings
+    //             const data = XLSX.utils.sheet_to_json(worksheet, { raw: true, dateNF: 'DD-MM-YYYY', header: 0 });
+    //             resolve(data);
+    //         };
+    //         reader.onerror = (error) => reject(error);
+    //         reader.readAsArrayBuffer(file);
+    //     });
+    // }
+
 
     const getInfo = () => {
         if (labelAddMembersBar.toLowerCase() === "add examiners") {
@@ -52,7 +94,8 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
             });
         }
 
-        const excelData = await extractFileData(file);
+        // const excelData = await extractFileData(file);
+        // console.log(excelData);
 
         // FORMAT THE DATA IN REQUIRED OBJECT ACCEPTED BY THE BACKEND SCRIPT
         const formatedData = [];
@@ -71,9 +114,22 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
                 memberObj["roomNumber"] = excelData[i]["Room no"];
             }
             if (getInfo().userType === 'EXAMINER') {
+
+
+
                 memberObj["from"] = '';
                 memberObj["to"] = '';
                 memberObj["total"] = 0;
+
+                const tmpLastDateChecking = new Date(excelData[i]["Last Date of Paper Checking"]);
+                const tmpLastDateMarksUpload = new Date(excelData[i]["Last Date of Marks Upload"]);
+
+                memberObj["paperChecking"] = {
+                    lastDateChecking: `${(tmpLastDateChecking.getDate() + 1).toString().padStart(2, '0')}-${(tmpLastDateChecking.getMonth() + 1).toString().padStart(2, '0')}-${tmpLastDateChecking.getFullYear()}`,
+                    lastDateMarksUpload: `${(tmpLastDateMarksUpload.getDate() + 1).toString().padStart(2, '0')}-${(tmpLastDateMarksUpload.getMonth() + 1).toString().padStart(2, '0')}-${tmpLastDateMarksUpload.getFullYear()}`
+                };
+
+
             }
             formatedData.push(memberObj);
         }
@@ -122,7 +178,7 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
                         <h3 className=' text-center text-xl font-medium'>{labelAddMembersBar}</h3>
                     </div>
                     <form onSubmit={handleUploadAddMembers}>
-                        <input type="file" name='file' id='add-member-file' className='my-2' />
+                        <input type="file" name='file' id='add-member-file' onChange={handleFile} className='my-2' />
                         <button className=' my-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-medium'>Upload</button>
                     </form>
                     {/* <p className='my-3'>Available: 0</p> */}

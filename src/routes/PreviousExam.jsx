@@ -141,7 +141,7 @@ const PreviousExams = () => {
         <div className='text-[14px] w-[100%] overflow-hidden'>
             <div className='m-3'>
                 <h1 className='text-xl sm:text-2xl uppercase font-semibold text-center sm:my-7 mb-7  sm:text-left '>Exam&nbsp; Attendance&nbsp; Management</h1>
-                <span>TODO</span>
+                {/* <span>TODO</span> */}
                 {/* PREVIOUS EXAM(S) */}
                 <div id="upcoming-exams" className='my-7'>
                     <h2 className='text-xl font-semibold'>Previous Exams</h2>

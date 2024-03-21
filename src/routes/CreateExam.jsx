@@ -5,6 +5,7 @@ import * as XLSX from 'xlsx';
 import { toggleLoadingStatus } from '../app/features/loadingSlice';
 import axios from 'axios';
 import { toogleSidebar } from '../app/features/sidebarToggleSlice';
+import Exam from './Exam';
 
 const CreateExam = () => {
 
@@ -22,7 +23,7 @@ const CreateExam = () => {
     const [exam, setExam] = useState({
         examName: '',
         examDate: new Date(),
-        examTime: (new Date()).getTime(),
+        examTime: '',
         examLocations: [
             {
                 rooms: []
@@ -177,6 +178,8 @@ const CreateExam = () => {
         }
         // console.log(tmpSaved);
 
+        
+
         setExam((prev) => ({
             ...prev,
             examLocations: exmpt,
@@ -185,13 +188,39 @@ const CreateExam = () => {
         return tmpSaved;
     }
 
+    const convertToAMPM = (time24) => {
+        let hour = parseInt(time24.substring(0, 2));
+        let minute = time24.substring(3);
+    
+        let period = (hour >= 12) ? "PM" : "AM";
+    
+        hour = (hour > 12) ? hour - 12 : hour;
+        hour = (hour === 0) ? 12 : hour;
+    
+        return `${hour}:${minute} ${period}`;
+    }
+
     // SCHEDULE AN EXAM
     const scheduleExam = async () => {
         const examObj = formatExam();
         setActivityStatus('Creating Exam!');
+
+        let examTime = convertToAMPM(exam.examTime);
+        // console.log(exam.examTime.substring(0, 2));
+        // if(Number(exam.examTime.substring(0, exam.examTime.indexOf(':'))) == 12) { // For 12:00 PM
+        //     examTime = `${Number(exam.examTime.substring(0, exam.examTime.indexOf(':')))}:${exam.examTime.substring(exam.examTime.indexOf(':') + 1)} PM`;
+        // }
+        // if(Number(exam.examTime.substring(0, exam.examTime.indexOf(':'))) > 12) { // For greater than 12:00 PM
+        //     console.log(exam.examTime, exam.examTime.length, Number(exam.examTime.substring(0, exam.examTime.indexOf(':'))));
+        //     examTime = `${Number(exam.examTime.substring(0, exam.examTime.indexOf(':'))) - 12}:${exam.examTime.substring(exam.examTime.indexOf(':') + 1)} PM`;
+        // }
+        // else {
+        //     examTime = `${Number(exam.examTime.substring(0, exam.examTime.indexOf(':')))}:${exam.examTime.substring(exam.examTime.indexOf(':') + 1)} AM`;
+        // }
+        console.log("examTime before scheduling: ", examTime);
         try {
             const res = await axios.post(`${host}/api/exam/create`,
-                { ...examObj },
+                { ...examObj, examTime },
                 {
                     headers: {
                         accessToken: auth["user-credentials"].accessToken,
@@ -213,7 +242,7 @@ const CreateExam = () => {
     }
 
     // UPLOAD THE EXAMINERS 
-    const uploadExaminersData = async (examId) => {
+    const uploadExaminersData = async (examId, examTime) => {
 
         const examinersObjArr = [];
         setActivityStatus('Uploading examiners!')
@@ -225,7 +254,7 @@ const CreateExam = () => {
                 phone: examinersData[i]["Mobile"],
                 examName: exam.examName,
                 examDate: exam.examDate,
-                examTime: exam.examTime,
+                examTime: examTime,
                 examId: examId
             });
         }
@@ -250,7 +279,7 @@ const CreateExam = () => {
     }
 
     // UPLOAD THE INVIGILATORS
-    const uploadInvigilatorsData = async (examId) => {
+    const uploadInvigilatorsData = async (examId, examTime) => {
         // console.log(invigilatorsData, exam);
         setActivityStatus('Uploading invigilators!');
         const invigilatorsObjArr = [];
@@ -262,7 +291,7 @@ const CreateExam = () => {
                 phone: invigilatorsData[i]["Mobile"],
                 examName: exam.examName,
                 examDate: exam.examDate,
-                examTime: exam.examTime,
+                examTime: examTime,
                 examId: examId,
                 roomNumber: invigilatorsData[i]["Room no"]
             });
@@ -289,7 +318,7 @@ const CreateExam = () => {
     }
 
     // UPLOAD THE SUPPORT_STAFF
-    const uploadSupportStaffData = async (examId) => {
+    const uploadSupportStaffData = async (examId, examTime) => {
         // console.log(supportStaffData, exam);
         setActivityStatus('Uploading support staff!');
         const supportStaffObjArr = [];
@@ -301,7 +330,7 @@ const CreateExam = () => {
                 phone: supportStaffData[i]["Mobile"],
                 examName: exam.examName,
                 examDate: exam.examDate,
-                examTime: exam.examTime,
+                examTime,
                 examId
             });
         }
@@ -327,7 +356,7 @@ const CreateExam = () => {
     }
 
     // UPLOAD THE EXAM_OC
-    const uploadExamOC = async (examId) => {
+    const uploadExamOC = async (examId, examTime) => {
         // console.log(examOC, exam);
         try {
             const res = await axios.post(`${host}/api/common_role_assign/create`,
@@ -338,7 +367,7 @@ const CreateExam = () => {
                     phone: examOC.phone,
                     examName: exam.examName,
                     examDate: exam.examDate,
-                    examTime: exam.examTime,
+                    examTime,
                     examId
                 },
                 {
@@ -388,23 +417,37 @@ const CreateExam = () => {
 
         document.getElementById('progress-container').classList.toggle('invisible');
 
+        
+        let examTime = convertToAMPM(exam.examTime);
+        // if(Number(exam.examTime.substring(0, 2)) === 12) { // For 12:00 PM
+        //     examTime = `${Number(exam.examTime.substring(0, exam.examTime.indexOf(':')))}:${exam.examTime.substring(exam.examTime.indexOf(':') + 1)} PM`;
+        // }
+        // if(Number(exam.examTime.substring(0, 2)) > 12) { // For greater than 12:00 PM
+        //     console.log(exam.examTime, exam.examTime.length, Number(exam.examTime.substring(0, exam.examTime.indexOf(':'))));
+        //     examTime = `${Number(exam.examTime.substring(0, exam.examTime.indexOf(':'))) - 12}:${exam.examTime.substring(exam.examTime.indexOf(':') + 1)} PM`;
+        // }
+        // else {
+        //     examTime = `${Number(exam.examTime.substring(0, exam.examTime.indexOf(':')))}:${exam.examTime.substring(exam.examTime.indexOf(':') + 1)} AM`;
+        // }
+        
+
         const examCreated = await scheduleExam();
 
         if (!examCreated) { return; }
 
         setActivityStatus('Assigning Exam OC!');
-        await uploadExamOC(examCreated._id);
+        await uploadExamOC(examCreated._id, examTime);
 
         if (examinersData.length !== 0) {
-            await uploadExaminersData(examCreated._id);
+            await uploadExaminersData(examCreated._id, examTime);
         }
 
         if (invigilatorsData.length !== 0) {
-            await uploadInvigilatorsData(examCreated._id);
+            await uploadInvigilatorsData(examCreated._id, examTime);
         }
 
         if (supportStaffData.length !== 0) {
-            await uploadSupportStaffData(examCreated._id);
+            await uploadSupportStaffData(examCreated._id, examTime);
         }
 
         setActivityStatus('Uploading students!');
@@ -419,7 +462,7 @@ const CreateExam = () => {
                 examDetails: {
                     examName: excelData[i]["Exam Name"],
                     examDate: exam.examDate,
-                    examTime: exam.examTime,
+                    examTime: examTime,
                     floorNumber: isNaN(Number(excelData[i]["Floor No."]?.substring(0, 1))) ? 0 : Number(excelData[i]["Floor No."]?.substring(0, 1)),
                     roomNumber: excelData[i]["Room No."],
                     seatNumber: excelData[i]["Seat No."],
@@ -446,12 +489,13 @@ const CreateExam = () => {
             text: 'Exam scheduled successfully...!',
             icon: 'success', // Options: 'success', 'error', 'warning', 'info'
         });
-
+        console.log(exam)
     }
 
     // HANDLE THE CHANGES IN THE EXAM
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        let { name, value } = e.target;
+        console.log(exam.examTime, `${name}: ${value}`);
         setExam((prev) => ({
             ...prev,
             [name]: value,
@@ -468,7 +512,7 @@ const CreateExam = () => {
     }
 
     return (
-        <div id='create-exam' className='create-exam h-full overflow-y-auto m-3 text-[14px]'>
+        <div id='create-exam' className='create-exam h-full  m-3 text-[14px]'>
             <div className='heading'>
                 <h1 className='text-2xl font-semibold my-3'>Create Exam</h1>
                 <div className='w-full h-[2px] bg-blue-500 rounded-md'></div>

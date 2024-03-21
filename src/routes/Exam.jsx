@@ -27,9 +27,12 @@ const Exam = () => {
 
     const host = useSelector((state) => state.host.host);
     const auth = useSelector((state) => state.auth);
+
     const floorNumber = (useSelector((state) => state.floorNumber)).floorNumber;
     const roomNumber = (useSelector((state) => state.roomNumber)).roomNumber;
     const exam = (useSelector((state) => state.exam)).examSelected;
+
+    const [dateTimeString, setDateTimeString] = useState(`${exam.examDate} ${exam.examTime.toString().substring(0, 9)}`);
 
     const [toogleExamFunctionsDisplay, setToogleExamFunctionsDisplay] = useState(true);
     const [tooglAttendanceDisplay, setToogleAttendanceDisplay] = useState(false);
@@ -39,12 +42,12 @@ const Exam = () => {
     const [toogleAllot, setToogleAllot] = useState(false);
     const [labelAddMembersBar, setLabelAddMembersBar] = useState('');
 
-    useEffect(()=> {
-        if(auth['user-credentials'].user.userType == 'INVIGILATOR') {
+    useEffect(() => {
+        if (auth['user-credentials'].user.userType == 'INVIGILATOR') {
             setToogleAttendanceDisplay(true);
             setToogleExamFunctionsDisplay(false);
         }
-        else if(auth['user-credentials'].user.userType == 'EXAMINER') {
+        else if (auth['user-credentials'].user.userType == 'EXAMINER') {
             setToogleAssignMarksDisplay(true);
             setToogleExamFunctionsDisplay(false);
         }
@@ -62,18 +65,39 @@ const Exam = () => {
     const handleExamFunctionClick = async (label) => {
         console.log(label);
         if ((label.toLowerCase() === "add examiners") || (label.toLowerCase() === "add support staff") || (label.toLowerCase() === "add invigilator")) {
-            
-                setToogleAddMembersBar(true);
-                setLabelAddMembersBar(label)
-            
-            
+            setToogleAddMembersBar(true);
+            setLabelAddMembersBar(label)
         }
 
         else if (label.toLowerCase() === "mark attendance") {
-            
-            setToogleAttendanceDisplay(true);
-            setToogleExamFunctionsDisplay(false);
-            setToogleCollectAnswerScriptDisplay(false);
+            console.log("dateTimeString:", dateTimeString);
+            const dateTime = new Date(dateTimeString);
+            const currentDate = new Date();
+            console.log(auth['user-credentials'].user.userType)
+
+            if (auth['user-credentials'].user.userType !== 'ADMIN') {
+                console.log("currentDate:", currentDate)
+                console.log("dateTime:", dateTime)
+                console.log("currentDate >= dateTime =", currentDate >= dateTime);
+                if (currentDate >= dateTime) {
+                    setToogleAttendanceDisplay(true);
+                    setToogleExamFunctionsDisplay(false);
+                    setToogleCollectAnswerScriptDisplay(false);
+                }
+                else {
+                    Swal.fire({
+                        title: 'Alert',
+                        text: 'Attendance mode will be enabled during the exam time...',
+                        icon: 'info', // Options: 'success', 'error', 'warning', 'info'
+                    });
+                }
+            }
+            else {
+                setToogleAttendanceDisplay(true);
+                setToogleExamFunctionsDisplay(false);
+                setToogleCollectAnswerScriptDisplay(false);
+            }
+
         }
         else if (label.toLowerCase() === "collect answer script") {
             setToogleCollectAnswerScriptDisplay(true);
@@ -83,8 +107,6 @@ const Exam = () => {
         else if (label.toLowerCase() === "allot answer script") {
             setToogleExamFunctionsDisplay(false);
             setToogleAllot(true)
-
-
         }
         else if (label.toLowerCase() === "exam report") {
             await handleExamReport();
@@ -239,7 +261,7 @@ const Exam = () => {
                         <tr>
                             <td className='border w-1/3'>{exam.examName}</td>
                             <td className='border w-1/3'>{exam.examDate.toString().substring(0, 10)}</td>
-                            <td className='border w-1/3'>{exam.examTime}</td>
+                            <td className='border w-1/3'>{exam.examTime.toString().substring(0, 9)}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -274,7 +296,7 @@ const Exam = () => {
                 </> :
                 <div>
                     <button onClick={() => { handleExamFunctionClick('display_functions') }} className='bg-slate-200 pl-1 pr-2 py-2 rounded-md '>Exam Functions</button>
-                </div> 
+                </div>
             }
 
 
@@ -283,7 +305,7 @@ const Exam = () => {
             {
                 !toogleExamFunctionsDisplay ?
                     <div id='bread-crumb' className=' flex rounded-md my-1'>
-                        
+
                         <ul className={`${location.pathname.includes(`/dashboard/${exam._id}/floor-${floorNumber}`) ? 'bg-slate-300' : ''} text-slate-500 text-[14px] p-1 flex gap-2`}>
                             {console.log("url:", location.pathname, "window:", window.location.href)}
                             {window.location.href.includes(`#/dashboard/${exam._id}/floor-${floorNumber}`) ?
@@ -307,15 +329,15 @@ const Exam = () => {
                         </ul>
                     </div> : ''}
 
-                    {
-                        toogleAssignMarksDisplay ?
-                        <span>TODO: Assign marks</span> :''
-                    }
+            {
+                toogleAssignMarksDisplay ?
+                    <span>TODO: Assign marks</span> : ''
+            }
             {
                 tooglAttendanceDisplay ?
-                <div className="exam-locations-container border h-[50vh] overflow-y-auto">
-                    <Outlet />
-                </div> : ''}
+                    <div className="exam-locations-container border h-[50vh] overflow-y-auto">
+                        <Outlet />
+                    </div> : ''}
 
 
 
@@ -341,13 +363,13 @@ const Exam = () => {
                             {
                                 exam && getSortedFloors(exam.examLocations).map((floor, i) => {
                                     return getSortedRooms(floor.rooms).map((room, j) => (
-                                        <AnswerScriptCountingRow 
-                                            key={`row-${i + j}`} 
-                                            indexFloor={i} 
-                                            floorNumber={floor.floorNumber} 
-                                            room={room} 
-                                            handleChangeExam={handleChangeExam} 
-                                            handleSaveExam={handleSaveExam} 
+                                        <AnswerScriptCountingRow
+                                            key={`row-${i + j}`}
+                                            indexFloor={i}
+                                            floorNumber={floor.floorNumber}
+                                            room={room}
+                                            handleChangeExam={handleChangeExam}
+                                            handleSaveExam={handleSaveExam}
                                         />
                                     ))
                                 })
@@ -365,7 +387,7 @@ const Exam = () => {
             {
                 toogleAllot === true ?
                     <AllotAnswerScript />
-                 : ''
+                    : ''
             }
 
         </div>
