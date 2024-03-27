@@ -564,7 +564,7 @@ const CreateExam = () => {
                         <div className='flex add-members-container gap-5'>
                             {/* INPUT THE FILE CONTAINING THE INVIGILATORS DETAILS */}
                             <div className='add-members-card w-1/3'>
-                                <h2 className='text-[16px] font-medium flex '>
+                                <h2 className='text-xl font-medium flex '>
                                     <span className='w-20'>Step 3:</span>
                                     <span>Add the Invigilators</span>
                                 </h2>
@@ -576,7 +576,7 @@ const CreateExam = () => {
 
                             {/* INPUT THE FILE CONTAINING THE SUPPORT_STAFF DETAILS */}
                             <div className='add-members-card w-1/3'>
-                                <h2 className='text-[16px] font-medium flex '>
+                                <h2 className='text-xl font-medium flex '>
                                     <span className='w-20 '>Step 4:</span>
                                     <span>Add the Support staff</span>
                                 </h2>
@@ -588,7 +588,7 @@ const CreateExam = () => {
 
                             {/* INPUT THE FILE CONTAINING THE EXAMINERS DETAILS */}
                             <div className='add-members-card w-1/3'>
-                                <h2 className='text-[16px] font-medium flex '>
+                                <h2 className='text-xl font-medium flex '>
                                     <span className='w-20'>Step 5:</span>
                                     <span>Add the Examiners</span>
                                 </h2>

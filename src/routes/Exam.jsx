@@ -18,6 +18,7 @@ import axios from 'axios';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
 import AllotAnswerScript from '../components/route_components/exam/AllotAnswerScript';
+import ExaminerWorkspace from '../components/route_components/exam/ExaminerWorkspace';
 
 const Exam = () => {
 
@@ -295,7 +296,9 @@ const Exam = () => {
 
                 </> :
                 <div>
-                    <button onClick={() => { handleExamFunctionClick('display_functions') }} className='bg-slate-200 pl-1 pr-2 py-2 rounded-md '>Exam Functions</button>
+                    {
+                        auth['user-credentials'].user.userType !== 'EXAMINER' &&
+                        <button onClick={() => { handleExamFunctionClick('display_functions') }} className='bg-slate-200 pl-1 pr-2 py-2 rounded-md '>Exam Functions</button>}
                 </div>
             }
 
@@ -330,8 +333,8 @@ const Exam = () => {
                     </div> : ''}
 
             {
-                toogleAssignMarksDisplay ?
-                    <span>TODO: Assign marks</span> : ''
+                toogleAssignMarksDisplay &&
+                    <ExaminerWorkspace />
             }
             {
                 tooglAttendanceDisplay ?

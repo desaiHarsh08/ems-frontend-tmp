@@ -13,23 +13,6 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
     const exam = (useSelector((state) => state.exam)).examSelected;
 
     const [progressStatus, setProgressStatus] = useState(0);
-
-    // const extractFileData = (file) => {
-    //     return new Promise((resolve, reject) => {
-    //         const reader = new FileReader();
-    //         reader.onload = (e) => {
-    //             const dataFromFile = e.target.result;
-    //             const workbook = XLSX.read(dataFromFile, { type: 'array' });
-    //             const sheetName = workbook.SheetNames[0];
-    //             const worksheet = workbook.Sheets[sheetName];
-    //             const data = XLSX.utils.sheet_to_json(worksheet, { raw: true });
-    //             resolve(data);
-    //         };
-    //         reader.onerror = (error) => reject(error);
-    //         reader.readAsArrayBuffer(file);
-    //     });
-    // }
-
     const [excelData, setExcelData] = useState([]);
 
     const handleFile = async (e) => {
@@ -197,7 +180,11 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
                                     <ul className='ml-2 my-1'>
                                         {
                                             labelAddMembersBar === "Add Examiners" &&
-                                            <li>Name of Examiner</li>
+                                            <>
+                                                <li>Name of Examiner</li>
+                                                <li>Last Date of Paper Checking</li>
+                                                <li>Last Date of Marks Upload</li>
+                                            </>
                                         }
                                         {
                                             labelAddMembersBar === "Add support staff" &&
