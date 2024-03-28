@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoCloseSharp } from "react-icons/io5";
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -11,9 +11,54 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
     const auth = useSelector((state) => state.auth);
     const host = useSelector((state) => state.host.host);
     const exam = (useSelector((state) => state.exam)).examSelected;
-
+    // console.log(exam)
     const [progressStatus, setProgressStatus] = useState(0);
     const [excelData, setExcelData] = useState([]);
+    const [membersArr, setMembersArr] = useState([]);
+
+    useEffect(() => {
+        (async () => {
+            let userType = '';
+            console.log(labelAddMembersBar)
+            if (labelAddMembersBar.toLowerCase().includes('examiner')) {
+                userType = "EXAMINER"
+            }
+            else if (labelAddMembersBar.toLowerCase().includes('support_staff')) {
+                userType = "SUPPORT_STAFF"
+            }
+            else if (labelAddMembersBar.toLowerCase().includes('invigilator')) {
+                userType = "INVIGILATOR"
+            }
+
+            const res = await axios.post(`${host}/api/common_role_assign/get-by-role-name-date`, {
+
+                examName: exam.examName,
+                examDate: exam.examDate,
+                userType
+
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    accessToken: auth["user-credentials"].accessToken,
+                    refreshToken: auth["user-credentials"].refreshToken,
+                    email: auth["user-credentials"].user.email
+                }
+            });
+            let dataArr = res.data.payload;
+            let tmpArr = [];
+            for(let i = 0; i < dataArr.length; i++) {
+                if(tmpArr.some(ele => ele.email === dataArr[i].email)) {
+                    continue;
+                }
+                else {
+                    tmpArr.push(dataArr[i]);
+                }
+            }
+            setMembersArr(tmpArr);
+
+        })();
+    }, [labelAddMembersBar]);
+
 
     const handleFile = async (e) => {
         const file = e.target.files[0];
@@ -24,7 +69,7 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
                 const workbook = XLSX.read(dataFromFile, { cellDates: true, type: 'array' });
                 const sheetName = workbook.SheetNames[0]; // Assumes the first sheet
                 const worksheet = workbook.Sheets[sheetName];
-    
+
                 // Modify the option to parse dates with the format 'dd-mm-yyyy'
                 const data = XLSX.utils.sheet_to_json(worksheet, { raw: true, dateNF: 'dd-mm-yyyy' });
                 setExcelData(data);
@@ -33,26 +78,6 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
             reader.readAsArrayBuffer(file);
         }
     };
-    
-
-    // const extractFileData = (file) => {
-    //     return new Promise((resolve, reject) => {
-    //         const reader = new FileReader();
-    //         reader.onload = (e) => {
-    //             const dataFromFile = e.target.result;
-    //             const workbook = XLSX.read(dataFromFile, { type: 'array' });
-    //             const sheetName = workbook.SheetNames[0];
-    //             const worksheet = workbook.Sheets[sheetName];
-
-    //             // Modify the option to keep dates as strings
-    //             const data = XLSX.utils.sheet_to_json(worksheet, { raw: true, dateNF: 'DD-MM-YYYY', header: 0 });
-    //             resolve(data);
-    //         };
-    //         reader.onerror = (error) => reject(error);
-    //         reader.readAsArrayBuffer(file);
-    //     });
-    // }
-
 
     const getInfo = () => {
         if (labelAddMembersBar.toLowerCase() === "add examiners") {
@@ -201,14 +226,27 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
                                         <li>Mobile</li>
                                     </ul>
                                 </p>
-
-
-
-
-
                             </li>
                         </ol>
                     </div>
+
+                    {/* Members Information */}
+                    <div className='my-7'>
+                        {
+                            membersArr.length > 0 ?
+                                <>
+                                <p className='text-[16px] my-3 font-medium'>Members available: -</p>
+                                {membersArr.map((member, index) => (
+                                    <p className='my-1'>
+                                        <span>{index + 1}. </span>
+                                        <span>{member.username}</span>
+                                    </p>
+                                    ))}
+                                </>
+                                : <p className='text-[16px] my-3 font-medium'>No members got assigned!</p>
+                        }
+                    </div>
+
                 </div>
             </div>
 

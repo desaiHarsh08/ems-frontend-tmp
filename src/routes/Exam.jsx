@@ -43,6 +43,8 @@ const Exam = () => {
     const [toogleAllot, setToogleAllot] = useState(false);
     const [labelAddMembersBar, setLabelAddMembersBar] = useState('');
 
+    const [studentsArr, setStudentsArr] = useState([]);
+
     useEffect(() => {
         if (auth['user-credentials'].user.userType == 'INVIGILATOR') {
             setToogleAttendanceDisplay(true);
@@ -53,6 +55,32 @@ const Exam = () => {
             setToogleExamFunctionsDisplay(false);
         }
     }, []);
+
+    // Fetch all the students
+    useEffect(() => {
+        (async () => {
+            const res = await axios.post(`${host}/api/student/get-student-by-date-name`, {
+                searchObj: {
+                    examName: exam.examName,
+                    examDate: exam.examDate
+                }
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    accessToken: auth["user-credentials"].accessToken,
+                    refreshToken: auth["user-credentials"].refreshToken,
+                    email: auth["user-credentials"].user.email
+                }
+            });
+            let dataArr = res.data.payload;
+            // console.log(dataArr)
+            setStudentsArr(dataArr);
+            
+            // console.log("students available:",dataArr.length)
+
+        })();
+    }, []);
+
     const floorNav = () => {
         document.getElementById('bread-crumb').classList.toggle('invisible');
         navigate(`/dashboard/${exam._id}`, { replace: true });
@@ -64,22 +92,22 @@ const Exam = () => {
     }
 
     const handleExamFunctionClick = async (label) => {
-        console.log(label);
+        // console.log(label);
         if ((label.toLowerCase() === "add examiners") || (label.toLowerCase() === "add support staff") || (label.toLowerCase() === "add invigilator")) {
             setToogleAddMembersBar(true);
             setLabelAddMembersBar(label)
         }
 
         else if (label.toLowerCase() === "mark attendance") {
-            console.log("dateTimeString:", dateTimeString);
+            // console.log("dateTimeString:", dateTimeString);
             const dateTime = new Date(dateTimeString);
             const currentDate = new Date();
-            console.log(auth['user-credentials'].user.userType)
+            // console.log(auth['user-credentials'].user.userType)
 
             if (auth['user-credentials'].user.userType !== 'ADMIN') {
-                console.log("currentDate:", currentDate)
-                console.log("dateTime:", dateTime)
-                console.log("currentDate >= dateTime =", currentDate >= dateTime);
+                // console.log("currentDate:", currentDate)
+                // console.log("dateTime:", dateTime)
+                // console.log("currentDate >= dateTime =", currentDate >= dateTime);
                 if (currentDate >= dateTime) {
                     setToogleAttendanceDisplay(true);
                     setToogleExamFunctionsDisplay(false);
@@ -121,10 +149,10 @@ const Exam = () => {
     }
 
     const handleSaveExam = async (e, exam) => {
-        console.log('fired')
+        // console.log('fired')
         try {
-            console.log("saving")
-            console.log(exam.examLocations[0].rooms)
+            // console.log("saving")
+            // console.log(exam.examLocations[0].rooms)
             const response = await axios.post(`${host}/api/exam/update/${exam._id}`, exam, {
                 headers: {
                     accessToken: auth["user-credentials"].accessToken,
@@ -132,8 +160,8 @@ const Exam = () => {
                     email: auth["user-credentials"].user.email
                 }
             });
-            console.log("saved")
-            console.log(response.data.payload)
+            // console.log("saved")
+            // console.log(response.data.payload)
             dispatch(setExamActual({ exam }));
             return response.data.payload;
         } catch (error) {
@@ -306,7 +334,7 @@ const Exam = () => {
             {/* BREAD-CRUMB */}
 
             {
-                !toogleExamFunctionsDisplay ?
+                !toogleExamFunctionsDisplay && tooglAttendanceDisplay ?
                     <div id='bread-crumb' className=' flex rounded-md my-1'>
 
                         <ul className={`${location.pathname.includes(`/dashboard/${exam._id}/floor-${floorNumber}`) ? 'bg-slate-300' : ''} text-slate-500 text-[14px] p-1 flex gap-2`}>
@@ -354,12 +382,13 @@ const Exam = () => {
                     <h2 className='text-xl font-medium '>Count the answer-scripts</h2>
                     <div className='border border-slate-400 min-w-[1047px] overflow-x-scroll'>
                         <div className="fields w-full flex border-b border-slate-400">
-                            <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Floor</p>
-                            <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Room</p>
-                            <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Expected Scripts</p>
-                            <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Actual Scripts</p>
-                            <p className="w-[16.66%] border-r border-slate-400 text-center py-2 text-[14px]">Remarks</p>
-                            <p className="w-[16.66%] text-center py-2 text-[14px]">Action</p>
+                            <p className="w-[14.28%] border-r border-slate-400 text-center py-2 text-[14px]">Floor</p>
+                            <p className="w-[14.28%] border-r border-slate-400 text-center py-2 text-[14px]">Room</p>
+                            <p className="w-[14.28%] border-r border-slate-400 text-center py-2 text-[14px]">Alloted</p>
+                            <p className="w-[14.28%] border-r border-slate-400 text-center py-2 text-[14px]">Attended</p>
+                            <p className="w-[14.28%] border-r border-slate-400 text-center py-2 text-[14px]">Actually received</p>
+                            <p className="w-[14.28%] border-r border-slate-400 text-center py-2 text-[14px]">Remarks</p>
+                            <p className="w-[14.28%] text-center py-2 text-[14px]">Action</p>
                         </div>
                         <div className=''>
 
@@ -368,6 +397,7 @@ const Exam = () => {
                                     return getSortedRooms(floor.rooms).map((room, j) => (
                                         <AnswerScriptCountingRow
                                             key={`row-${i + j}`}
+                                            studentsArr={studentsArr}
                                             indexFloor={i}
                                             floorNumber={floor.floorNumber}
                                             room={room}
