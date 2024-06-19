@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { setFloorNumber } from '../../../app/features/floorNumberSlice';
+import { toogleBreadCrumbNavItem } from '../../../app/features/breadCrumbNavSlice';
 
 const FloorsDisplay = () => {
 
@@ -21,33 +22,63 @@ const FloorsDisplay = () => {
 
     const examIds = JSON.parse(localStorage.getItem('examids'));
 
-    const [floorNumberForNonAdmin, setFloorNumberForNonAdmin] = useState();
+    const [floorNumbersForNonAdmin, setFloorNumbersForNonAdmin] = useState([]);
 
     useEffect(() => {
         // document.getElementById('bread-crumb').classList.remove('invisible')
         fetchFloorStatus();
     }, []);
 
+    const fetchUser = async (examId) => {
+        const res = await axios.post(`${host}/api/common_role_assign/user-examId`, {
+            userType: "INVIGILATOR",
+            examId
+        }, {
+            headers: {
+                accessToken: auth["user-credentials"].accessToken,
+                refreshToken: auth["user-credentials"].refreshToken,
+                email: auth["user-credentials"].user.email
+            }
+        });
+        console.log(res.data.payload);
+        const tmpUserArr = res.data.payload.filter(ele => ele.email === auth['user-credentials'].user.email);
+        console.log("act user:", tmpUserArr);
+        return tmpUserArr;
+    }
+
     useEffect(() => {
-        if (exam) {
-            // console.log("exam:", exam, auth)
-            for (let i = 0; i < exam.examLocations.length; i++) {
-                let floor = exam.examLocations[i];
-                // // console.log("in loop floor:", floor)
-                for (let j = 0; j < floor.rooms.length; j++) {
-                    for (let k = 0; k < floor.rooms.length; k++) {
-                        // // console.log(floor.rooms[k])
-                        if (floor.rooms[k].roomNumber == auth['user-credentials'].user.roomNumber) {
-                            // console.log(exam.examLocations[i]);
-                            setFloorNumberForNonAdmin(exam.examLocations[i]);
-                            break;
+        console.log("user room:", auth['user-credentials'].user.roomNumber);
+        if (exam && examIds.includes(exam._id)) {
+            var userRoomNumberInitial;
+            var userRoomNumbersArr = [];
+            fetchUser(exam._id).then((allUserRooms) => {
+                userRoomNumbersArr = allUserRooms
+                console.log("allUserRooms:", allUserRooms)
+                console.log("exam:", exam, auth, userRoomNumbersArr)
+                const tmpFloorNumbersForNonAdmins = [];
+                for (let i = 0; i < exam.examLocations.length; i++) {
+                    let floor = exam.examLocations[i];
+                    console.log("floor:", floor.floorNumber)
+                    for (let j = 0; j < floor.rooms.length; j++) {
+                        for (let k = 0; k < floor.rooms.length; k++) {
+                            // console.log(floor.rooms[k])
+                            if (floor.rooms[k].roomNumber == auth['user-credentials'].user.roomNumber || userRoomNumbersArr.find(ele => ele.roomNumber == floor.rooms[k].roomNumber)) {
+                                console.log(exam.examLocations[i]);
+                                if (tmpFloorNumbersForNonAdmins.find(ele => ele._id === exam.examLocations[i]._id)) {
+                                    continue;
+                                }
+                                tmpFloorNumbersForNonAdmins.push(exam.examLocations[i]);
+                                break;
+                            }
                         }
                     }
                 }
-            }
+                console.log("tmpFloorNumbersForNonAdmins:", tmpFloorNumbersForNonAdmins)
+                setFloorNumbersForNonAdmin(tmpFloorNumbersForNonAdmins);
+            });
         }
-        // console.log(floorNumberForNonAdmin)
-    }, [exam, floorNumberForNonAdmin]);
+        // console.log(floorNumbersForNonAdmin)
+    }, [exam,]);
 
     const isFloorAttendanceMarked = async (floorNumber) => {
         try {
@@ -93,8 +124,14 @@ const FloorsDisplay = () => {
         });
     };
 
+    const handleBreadCrumbChange = (navItem) => {
+        console.log("handleBreadCrumbChange() called, for", navItem);
+        dispatch(toogleBreadCrumbNavItem({ navItem }))
+    }
+
     const handleFloorClick = (floorNumber) => {
-        // // console.log(floorNumber);
+        handleBreadCrumbChange("floors");
+        console.log(floorNumber);
         dispatch(setFloorNumber({ floorNumber }));
         // // console.log("ok");
         navigate(`floor-${floorNumber}`, { replace: true });
@@ -119,14 +156,23 @@ const FloorsDisplay = () => {
                 })
             }
 
-{console.log('here')}
+            {console.log('here')}
             {
-            // // console.log(floorNumberForNonAdmin)
-                exam && exam.examLocations && floorNumberForNonAdmin &&
-                <div onClick={() => { handleFloorClick(floorNumberForNonAdmin?.floorNumber) }} to={`${floorNumberForNonAdmin?.floorNumber}`} className={`flex items-center gap-5 cursor-pointer border border-slate-400 p-3 rounded-md hover:shadow-lg ${floorsDone.includes(floorNumberForNonAdmin?.floorNumber) ? 'bg-green-400 font-medium' : ''} `}>
-                     <img src='/floor-icon-0.jpg' alt='floor-img' className='w-20' />
-                     <p className='text-xl'>Floor {floorNumberForNonAdmin?.floorNumber}</p>
-                 </div>
+                // // console.log(floorNumbersForNonAdmin)
+                exam && exam.examLocations && floorNumbersForNonAdmin && exam.examLocations?.map(floor => {
+                    if (floorNumbersForNonAdmin.find(ele => ele.floorNumber == floor.floorNumber)) {
+                        return (
+                            <div
+                                onClick={() => { handleFloorClick(floor?.floorNumber) }}
+                                to={`${floor?.floorNumber}`}
+                                className={`flex items-center gap-5 cursor-pointer border border-slate-400 p-3 rounded-md hover:shadow-lg ${floorsDone.includes(floor?.floorNumber) ? 'bg-green-400 font-medium' : ''} `}
+                            >
+                                <img src='/floor-icon-0.jpg' alt='floor-img' className='w-20' />
+                                <p className='text-xl'>Floor {floor?.floorNumber}</p>
+                            </div>
+                        )
+                    }
+                })
             }
         </div>
     )

@@ -84,7 +84,7 @@ const AddMembersBar = ({ toogleAddMembersBar, setToogleAddMembersBar, labelAddMe
             return { columnName: 'Name of Examiner', userType: 'EXAMINER' };
         }
         else if (labelAddMembersBar.toLowerCase() === "add support staff") {
-            return { columnName: 'Name of support staff', userType: 'SUPPORT_STAFF' };
+            return { columnName: 'Name of Support staff', userType: 'SUPPORT_STAFF' };
         }
         else if (labelAddMembersBar.toLowerCase() === "add invigilator") {
             return { columnName: 'Name of Invigilators', userType: 'INVIGILATOR' };

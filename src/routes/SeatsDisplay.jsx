@@ -73,7 +73,7 @@ const SeatsDisplay = () => {
           }
         }
       );
-      // console.log(response.data.payload);
+      console.log("students:", response.data.payload);
       setStudentArr(response.data.payload);
     } catch (error) {
       // console.log(error);

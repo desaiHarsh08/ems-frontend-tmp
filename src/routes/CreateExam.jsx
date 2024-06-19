@@ -237,6 +237,7 @@ const CreateExam = () => {
                 text: 'Exam already got scheduled...!',
                 icon: 'error', // Options: 'success', 'error', 'warning', 'info'
             });
+            document.getElementById('progress-container').classList.toggle('invisible');
             return false;
         }
     }
@@ -255,7 +256,13 @@ const CreateExam = () => {
                 examName: exam.examName,
                 examDate: exam.examDate,
                 examTime: examTime,
-                examId: examId
+                examId: examId,
+                paperChecking: {
+                    lastDateChecking: examinersData[i]["Last Date of Paper Checking"],
+                    lastDateMarksUpload: examinersData[i]["Last Date of Marks Upload"],
+                },
+                dateChecking: '',
+                dateMarksUpload: ''
             });
         }
 
